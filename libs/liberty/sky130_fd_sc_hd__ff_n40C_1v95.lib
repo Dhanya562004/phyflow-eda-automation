@@ -1,0 +1,14 @@
+library(sky130_fd_sc_hd__ff_n40C_1v95) {
+  comment : "SkyWater 130nm HD Fast Corner Liberty Model";
+  technology (cmos);
+  delay_model : table_lookup;
+  nom_process : 1.0;
+  nom_temperature : -40.0;
+  nom_voltage : 1.95;
+
+  cell(inverter) {
+    area : 15.2;
+    pin(A) { direction : input; }
+    pin(Y) { direction : output; function : "!A"; }
+  }
+}

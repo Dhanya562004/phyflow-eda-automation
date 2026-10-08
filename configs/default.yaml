@@ -1,0 +1,17 @@
+flow:
+  output_dir: runs
+  timeout_sec: 300
+  max_retries: 2
+  synthesis_tool: Yosys
+  pnr_tool: OpenROAD
+  sta_tool: OpenSTA
+  spice_tool: ngspice
+
+thresholds:
+  min_wns_ns: 0.0
+  min_tns_ns: 0.0
+  max_area_um2: 50000.0
+  max_utilization_pct: 85.0
+  require_spice_convergence: true
+  max_rise_delay_ps: 200.0
+  max_fall_delay_ps: 200.0

@@ -1,0 +1,18 @@
+{
+  "run_id": "inverter_ss",
+  "timestamp": "2026-10-08T09:22:31.161091",
+  "design_name": "inverter",
+  "corner": "SS",
+  "status": "FAILED",
+  "runtime_sec": 0.249,
+  "tools_detected": {
+    "Yosys": "NOT FOUND",
+    "OpenROAD": "NOT FOUND",
+    "OpenSTA": "NOT FOUND",
+    "ngspice": "NOT FOUND",
+    "Bash": "NOT FOUND",
+    "Tcl": "NOT FOUND"
+  },
+  "execution_mode": "Deployed Demo / Mock Mode",
+  "artifact_dir": "C:\\Users\\Deeksha\\OneDrive\\Desktop\\PHYFlow \u2014 EDA Automation & Custom-Cell Validation Framework\\demo_artifacts\\inverter_ss"
+}

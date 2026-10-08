@@ -1,0 +1,18 @@
+{
+  "run_id": "alu_ss",
+  "timestamp": "2026-10-08T09:22:35.025597",
+  "design_name": "alu",
+  "corner": "SS",
+  "status": "FAILED",
+  "runtime_sec": 0.199,
+  "tools_detected": {
+    "Yosys": "NOT FOUND",
+    "OpenROAD": "NOT FOUND",
+    "OpenSTA": "NOT FOUND",
+    "ngspice": "NOT FOUND",
+    "Bash": "NOT FOUND",
+    "Tcl": "NOT FOUND"
+  },
+  "execution_mode": "Deployed Demo / Mock Mode",
+  "artifact_dir": "C:\\Users\\Deeksha\\OneDrive\\Desktop\\PHYFlow \u2014 EDA Automation & Custom-Cell Validation Framework\\demo_artifacts\\alu_ss"
+}

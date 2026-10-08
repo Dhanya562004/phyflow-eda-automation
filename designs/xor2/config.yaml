@@ -1,0 +1,11 @@
+design:
+  name: xor2
+  type: RTL
+  top_module: xor2
+  sources:
+    - designs/xor2/xor2.v
+
+thresholds:
+  min_wns_ns: 0.0
+  min_tns_ns: 0.0
+  max_area_um2: 200.0

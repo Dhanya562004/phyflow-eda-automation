@@ -1,0 +1,18 @@
+{
+  "run_id": "nor2_ff",
+  "timestamp": "2026-10-08T09:22:33.423523",
+  "design_name": "nor2",
+  "corner": "FF",
+  "status": "PASSED",
+  "runtime_sec": 0.245,
+  "tools_detected": {
+    "Yosys": "NOT FOUND",
+    "OpenROAD": "NOT FOUND",
+    "OpenSTA": "NOT FOUND",
+    "ngspice": "NOT FOUND",
+    "Bash": "NOT FOUND",
+    "Tcl": "NOT FOUND"
+  },
+  "execution_mode": "Deployed Demo / Mock Mode",
+  "artifact_dir": "C:\\Users\\Deeksha\\OneDrive\\Desktop\\PHYFlow \u2014 EDA Automation & Custom-Cell Validation Framework\\demo_artifacts\\nor2_ff"
+}

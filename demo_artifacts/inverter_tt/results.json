@@ -1,0 +1,51 @@
+{
+  "job_id": "inverter_tt",
+  "design": "inverter",
+  "corner": "TT",
+  "status": "PASSED",
+  "duration_sec": 0.245,
+  "failure_type": "NONE",
+  "error_details": "",
+  "validation": {
+    "passed": true,
+    "stage_statuses": {
+      "VALIDATION": "PASSED",
+      "SYNTHESIS": "PASSED",
+      "PLACE_ROUTE": "PASSED",
+      "STA": "PASSED",
+      "SPICE_VALIDATION": "PASSED"
+    },
+    "timing": {
+      "wns_ns": 0.12,
+      "tns_ns": 0.0,
+      "fmax_mhz": 101.21,
+      "critical_path": "reg_out/D (rising edge clock clk)",
+      "violations": 0
+    },
+    "area": {
+      "total_area_um2": 150.0,
+      "gate_count": 12,
+      "utilization_pct": 42.5,
+      "cell_breakdown": {
+        "sky130_fd_sc_hd__inv_1": 12
+      }
+    },
+    "power": {
+      "internal_power_mw": 0.015,
+      "switching_power_mw": 0.008,
+      "leakage_power_mw": 0.002,
+      "total_power_mw": 0.025
+    },
+    "spice": {
+      "cell_name": "inverter",
+      "logic_correct": true,
+      "spice_converged": true,
+      "rise_delay_ps": 18.2,
+      "fall_delay_ps": 15.2,
+      "voh_v": 1.8,
+      "vol_v": 0.0,
+      "details": ""
+    },
+    "violations": []
+  }
+}

@@ -1,0 +1,25 @@
+matrix:
+  designs:
+    - inverter
+    - nand2
+    - nor2
+    - xor2
+    - mux2
+    - alu
+  corners:
+    - SS
+    - TT
+    - FF
+
+scheduler:
+  workers: 4
+  max_retries: 2
+  timeout_sec: 300
+
+thresholds:
+  min_wns_ns: 0.0
+  min_tns_ns: 0.0
+  max_area_um2: 50000.0
+  require_spice_convergence: true
+  max_rise_delay_ps: 250.0
+  max_fall_delay_ps: 250.0

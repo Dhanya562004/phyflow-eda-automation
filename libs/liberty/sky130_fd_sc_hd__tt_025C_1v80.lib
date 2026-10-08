@@ -1,0 +1,35 @@
+library(sky130_fd_sc_hd__tt_025C_1v80) {
+  comment : "SkyWater 130nm HD Typical Corner Liberty Model (PHYFlow Educational Reference)";
+  technology (cmos);
+  delay_model : table_lookup;
+  nom_process : 1.0;
+  nom_temperature : 25.0;
+  nom_voltage : 1.80;
+
+  cell(inverter) {
+    area : 15.2;
+    pin(A) { direction : input; }
+    pin(Y) { direction : output; function : "!A"; }
+  }
+
+  cell(nand2) {
+    area : 18.5;
+    pin(A) { direction : input; }
+    pin(B) { direction : input; }
+    pin(Y) { direction : output; function : "!(A&B)"; }
+  }
+
+  cell(nor2) {
+    area : 19.8;
+    pin(A) { direction : input; }
+    pin(B) { direction : input; }
+    pin(Y) { direction : output; function : "!(A|B)"; }
+  }
+
+  cell(xor2) {
+    area : 28.4;
+    pin(A) { direction : input; }
+    pin(B) { direction : input; }
+    pin(Y) { direction : output; function : "A^B"; }
+  }
+}

@@ -1,0 +1,11 @@
+design:
+  name: alu
+  type: RTL
+  top_module: alu
+  sources:
+    - designs/alu/alu.v
+
+thresholds:
+  min_wns_ns: 0.0
+  min_tns_ns: 0.0
+  max_area_um2: 1200.0

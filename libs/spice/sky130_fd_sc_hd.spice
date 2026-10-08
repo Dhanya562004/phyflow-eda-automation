@@ -1,0 +1,3 @@
+* Simplified BSIM4 MOSFET models for SkyWater 130nm (PHYFlow SPICE Educational Fixture)
+.model nmos nmos level=54 vth0=0.45 u0=450 tox=4.1e-9
+.model pmos pmos level=54 vth0=-0.42 u0=140 tox=4.1e-9

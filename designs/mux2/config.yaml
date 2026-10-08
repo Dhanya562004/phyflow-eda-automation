@@ -1,0 +1,11 @@
+design:
+  name: mux2
+  type: RTL
+  top_module: mux2
+  sources:
+    - designs/mux2/mux2.v
+
+thresholds:
+  min_wns_ns: 0.0
+  min_tns_ns: 0.0
+  max_area_um2: 250.0

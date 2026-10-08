@@ -1,0 +1,16 @@
+design:
+  name: nand2
+  type: CUSTOM_CELL
+  top_module: nand2
+  sources:
+    - designs/nand2/nand2.v
+  spice: designs/nand2/nand2.sp
+  spice_testbench: designs/nand2/nand2_tb.sp
+
+thresholds:
+  min_wns_ns: 0.0
+  min_tns_ns: 0.0
+  max_area_um2: 120.0
+  require_spice_convergence: true
+  max_rise_delay_ps: 120.0
+  max_fall_delay_ps: 120.0

@@ -1,0 +1,19 @@
+VERSION 5.8 ;
+BUSBITCHARS "[]" ;
+DIVIDERCHAR "/" ;
+
+MACRO inverter
+  CLASS CORE ;
+  SIZE 1.38 BY 2.72 ;
+  ORIGIN 0 0 ;
+  FOREIGN inverter 0 0 ;
+END inverter
+
+MACRO nand2
+  CLASS CORE ;
+  SIZE 1.84 BY 2.72 ;
+  ORIGIN 0 0 ;
+  FOREIGN nand2 0 0 ;
+END nand2
+
+END LIBRARY

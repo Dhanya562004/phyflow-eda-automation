@@ -1,0 +1,54 @@
+{
+  "job_id": "nor2_ss",
+  "design": "nor2",
+  "corner": "SS",
+  "status": "FAILED",
+  "duration_sec": 0.241,
+  "failure_type": "VALIDATION_FAILURE",
+  "error_details": "Timing WNS Violation: WNS = -0.040 ns (Threshold >= 0.000 ns); Timing TNS Violation: TNS = -0.120 ns (Threshold >= 0.000 ns)",
+  "validation": {
+    "passed": false,
+    "stage_statuses": {
+      "VALIDATION": "PASSED",
+      "SYNTHESIS": "PASSED",
+      "PLACE_ROUTE": "PASSED",
+      "STA": "PASSED",
+      "SPICE_VALIDATION": "PASSED"
+    },
+    "timing": {
+      "wns_ns": -0.04,
+      "tns_ns": -0.12,
+      "fmax_mhz": 99.6,
+      "critical_path": "reg_out/D (rising edge clock clk)",
+      "violations": 1
+    },
+    "area": {
+      "total_area_um2": 450.0,
+      "gate_count": 48,
+      "utilization_pct": 65.2,
+      "cell_breakdown": {
+        "sky130_fd_sc_hd__inv_1": 48
+      }
+    },
+    "power": {
+      "internal_power_mw": 0.015,
+      "switching_power_mw": 0.008,
+      "leakage_power_mw": 0.002,
+      "total_power_mw": 0.025
+    },
+    "spice": {
+      "cell_name": "nor2",
+      "logic_correct": true,
+      "spice_converged": true,
+      "rise_delay_ps": 24.5,
+      "fall_delay_ps": 21.5,
+      "voh_v": 1.8,
+      "vol_v": 0.0,
+      "details": ""
+    },
+    "violations": [
+      "Timing WNS Violation: WNS = -0.040 ns (Threshold >= 0.000 ns)",
+      "Timing TNS Violation: TNS = -0.120 ns (Threshold >= 0.000 ns)"
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "job_id": "alu_ff",
+  "design": "alu",
+  "corner": "FF",
+  "status": "PASSED",
+  "duration_sec": 0.187,
+  "failure_type": "NONE",
+  "error_details": "",
+  "validation": {
+    "passed": true,
+    "stage_statuses": {
+      "VALIDATION": "PASSED",
+      "SYNTHESIS": "PASSED",
+      "PLACE_ROUTE": "PASSED",
+      "STA": "PASSED"
+    },
+    "timing": {
+      "wns_ns": 0.35,
+      "tns_ns": 0.0,
+      "fmax_mhz": 103.63,
+      "critical_path": "reg_out/D (rising edge clock clk)",
+      "violations": 0
+    },
+    "area": {
+      "total_area_um2": 450.0,
+      "gate_count": 48,
+      "utilization_pct": 65.2,
+      "cell_breakdown": {
+        "sky130_fd_sc_hd__inv_1": 48
+      }
+    },
+    "power": {
+      "internal_power_mw": 0.015,
+      "switching_power_mw": 0.008,
+      "leakage_power_mw": 0.002,
+      "total_power_mw": 0.025
+    },
+    "spice": null,
+    "violations": []
+  }
+}

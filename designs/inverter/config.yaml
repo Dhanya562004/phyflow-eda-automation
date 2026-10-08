@@ -1,0 +1,16 @@
+design:
+  name: inverter
+  type: CUSTOM_CELL
+  top_module: inverter
+  sources:
+    - designs/inverter/inverter.v
+  spice: designs/inverter/inverter.sp
+  spice_testbench: designs/inverter/inverter_tb.sp
+
+thresholds:
+  min_wns_ns: 0.0
+  min_tns_ns: 0.0
+  max_area_um2: 100.0
+  require_spice_convergence: true
+  max_rise_delay_ps: 100.0
+  max_fall_delay_ps: 100.0

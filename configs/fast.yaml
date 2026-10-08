@@ -1,0 +1,13 @@
+flow:
+  output_dir: runs
+  timeout_sec: 60
+  max_retries: 1
+  mock_mode: false
+
+thresholds:
+  min_wns_ns: -0.50
+  min_tns_ns: -2.00
+  max_area_um2: 100000.0
+  require_spice_convergence: true
+  max_rise_delay_ps: 500.0
+  max_fall_delay_ps: 500.0

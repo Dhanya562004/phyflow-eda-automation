@@ -1,0 +1,49 @@
+name: PHYFlow CI Engine
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test & Validate Framework
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tcl yosys ngspice
+
+      - name: Install Dependencies & PHYFlow
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
+      - name: Verify Tool Detection CLI
+        run: |
+          phyflow check-tools
+
+      - name: Run Test Suite (Unit, Integration, Regression)
+        run: |
+          pytest -v tests/
+
+      - name: Execute CLI Regression Flow
+        run: |
+          phyflow run --design inverter --all-corners
+          phyflow regression --config configs/regression.yaml --workers 4
+
+      - name: Verify List Runs & Storage
+        run: |
+          phyflow list-runs

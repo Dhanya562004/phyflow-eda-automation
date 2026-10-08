@@ -1,0 +1,18 @@
+{
+  "run_id": "nand2_ff",
+  "timestamp": "2026-10-08T09:22:32.608313",
+  "design_name": "nand2",
+  "corner": "FF",
+  "status": "PASSED",
+  "runtime_sec": 0.253,
+  "tools_detected": {
+    "Yosys": "NOT FOUND",
+    "OpenROAD": "NOT FOUND",
+    "OpenSTA": "NOT FOUND",
+    "ngspice": "NOT FOUND",
+    "Bash": "NOT FOUND",
+    "Tcl": "NOT FOUND"
+  },
+  "execution_mode": "Deployed Demo / Mock Mode",
+  "artifact_dir": "C:\\Users\\Deeksha\\OneDrive\\Desktop\\PHYFlow \u2014 EDA Automation & Custom-Cell Validation Framework\\demo_artifacts\\nand2_ff"
+}
