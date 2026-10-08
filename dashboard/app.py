@@ -356,7 +356,12 @@ elif nav_selection == "📜 Log Inspector":
         sel_run_log = st.selectbox("Select Run", df_runs["run_id"].tolist())
         sel_stage = st.selectbox("Select Stage Log", ["synthesis.log", "place_route.log", "sta.log", "ngspice.log"])
 
-        target_dirs = [runs_target_dir / sel_run_log, Path("demo_artifacts") / sel_run_log, Path("runs") / sel_run_log]
+        target_dirs = [
+            runs_dir_abs / sel_run_log,
+            demo_dir_abs / sel_run_log,
+            ROOT_DIR / "demo_artifacts" / sel_run_log,
+            ROOT_DIR / "runs" / sel_run_log
+        ]
         log_file_path = None
         for td in target_dirs:
             candidate = td / "logs" / sel_stage
