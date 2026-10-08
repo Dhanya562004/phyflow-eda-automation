@@ -18,8 +18,8 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from phyflow.utils.tool_detection import check_all_tools, get_tool_availability_dict
-from phyflow.storage.run_store import RunStore
-from phyflow.cli import KNOWN_DESIGNS, cmd_run, cmd_regression
+from phyflow.storage.run_store import RunStore, find_demo_artifacts_dir, find_runs_dir
+from phyflow.cli import KNOWN_DESIGNS, cmd_run, cmd_regression, build_parser
 from phyflow.models import Corner
 
 # Set Streamlit Page Configuration
@@ -89,25 +89,14 @@ nav_selection = st.sidebar.radio(
     ]
 )
 
-# Load Data from RunStore with automatic direct JSON artifact fallback using ROOT_DIR absolute paths
-runs_dir_abs = ROOT_DIR / "runs"
-demo_dir_abs = ROOT_DIR / "demo_artifacts"
+# Load Data from RunStore with automatic direct JSON artifact fallback using find_runs_dir and find_demo_artifacts_dir
+runs_dir_abs = find_runs_dir()
+demo_dir_abs = find_demo_artifacts_dir()
 
-if (runs_dir_abs.exists() and list(runs_dir_abs.glob("*_*"))):
-    runs_target_dir = runs_dir_abs
-else:
-    runs_target_dir = demo_dir_abs
-
-db_target_path = runs_target_dir / "phyflow_history.db"
-
-run_store = RunStore(runs_dir=runs_target_dir, db_path=db_target_path)
+run_store = RunStore()
 run_history = run_store.list_history(limit=100)
 
-if not run_history and runs_target_dir != demo_dir_abs:
-    run_store = RunStore(runs_dir=demo_dir_abs, db_path=demo_dir_abs / "phyflow_history.db")
-    run_history = run_store.list_history(limit=100)
-
-if runs_target_dir == demo_dir_abs or exec_mode != "Local Real EDA Mode" or not (runs_dir_abs.exists() and list(runs_dir_abs.glob("*_*"))):
+if exec_mode != "Local Real EDA Mode" or not (runs_dir_abs.exists() and list(runs_dir_abs.glob("*_*"))):
     data_source_label = "Data Source: Reference Demo Artifacts"
 else:
     data_source_label = "Data Source: Local SQLite History Database"
@@ -398,8 +387,9 @@ elif nav_selection == "🚀 Parallel Scheduler & LSF":
 
         if st.button("🚀 Trigger Flow Execution via CLI"):
             with st.spinner("Executing PHYFlow Pipeline..."):
-                sys.argv = ["phyflow", "run", "--design", run_d, "--corner", run_c]
-                cmd_run(st.session_state.get("dummy_args", None))
+                parser = build_parser()
+                run_args = parser.parse_args(["run", "--design", run_d, "--corner", run_c])
+                cmd_run(run_args)
                 st.success(f"Flow Job '{run_d}_{run_c}' completed successfully!")
                 st.rerun()
 
