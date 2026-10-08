@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Live Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io)
+[![Live Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://phyflow-eda-automation-cfatjrchfdx99dfhsqjk8g.streamlit.app/)
 [![PHYFlow CI Engine](https://github.com/Dhanya562004/phyflow-eda-automation/actions/workflows/ci.yml/badge.svg)](https://github.com/Dhanya562004/phyflow-eda-automation/actions)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![Test Suite](https://img.shields.io/badge/tests-19%2F19%20passed-brightgreen.svg)](tests/)
@@ -10,7 +10,7 @@
 
 **An production-grade Python engineering framework for physical IP enablement, automated EDA toolchain orchestration, parallel PVT corner regression testing, and transistor-level SPICE validation.**
 
-[Live Dashboard](https://share.streamlit.io) • [Architecture](#3-architecture) • [CLI Reference](#14-cli-command-reference) • [Docker Setup](#18-docker-setup) • [Deployment](#16-demo-mode-vs-real-eda-mode)
+[🚀 Live Dashboard](https://phyflow-eda-automation-cfatjrchfdx99dfhsqjk8g.streamlit.app/) • [Architecture](#3-architecture) • [CLI Reference](#14-cli-command-reference) • [Docker Setup](#18-docker-setup) • [Deployment](#16-demo-mode-vs-real-eda-mode)
 
 </div>
 
