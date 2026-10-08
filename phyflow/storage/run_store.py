@@ -14,14 +14,29 @@ from phyflow.models import RunMetadata, JobResult
 from phyflow.storage.sqlite_store import SQLiteRunStore
 from phyflow.utils.filesystem import create_run_directory
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+
 
 class RunStore:
     """Orchestrates saving and retrieving execution runs from filesystem, SQLite DB, or demo artifacts."""
 
-    def __init__(self, runs_dir: Path = Path("runs"), db_path: Path = Path("runs/phyflow_history.db")):
-        self.runs_dir = Path(runs_dir)
-        self.db_path = Path(db_path)
-        self.db = SQLiteRunStore(db_path)
+    def __init__(self, runs_dir: Optional[Path] = None, db_path: Optional[Path] = None):
+        self.project_root = PROJECT_ROOT
+
+        if runs_dir is None:
+            self.runs_dir = self.project_root / "runs"
+        else:
+            p = Path(runs_dir)
+            self.runs_dir = p if p.is_absolute() else self.project_root / p
+
+        if db_path is None:
+            self.db_path = self.runs_dir / "phyflow_history.db"
+        else:
+            p = Path(db_path)
+            self.db_path = p if p.is_absolute() else self.project_root / p
+
+        self.demo_dir = self.project_root / "demo_artifacts"
+        self.db = SQLiteRunStore(self.db_path)
 
     def save_run(
         self,
@@ -101,10 +116,11 @@ class RunStore:
     def scan_artifact_dir(self, target_dir: Path) -> List[Dict[str, Any]]:
         """Scans directory for run folders containing metadata.json/results.json directly."""
         runs = []
-        if not target_dir.exists():
+        p = target_dir if target_dir.is_absolute() else self.project_root / target_dir
+        if not p.exists():
             return runs
 
-        for entry in target_dir.iterdir():
+        for entry in p.iterdir():
             if entry.is_dir() and not entry.name.startswith("."):
                 meta_file = entry / "metadata.json"
                 res_file = entry / "results.json"
@@ -156,7 +172,17 @@ class RunStore:
         return runs
 
     def list_history(self, limit: int = 100) -> List[Dict[str, Any]]:
-        """Fetch run history summary from SQLite, falling back to direct JSON scan if empty or unreadable."""
+        """
+        Fetch run history summary.
+        Prioritizes JSON artifact direct scanning so cloud environments (Streamlit Cloud)
+        without active SQLite DB always display committed reference run artifacts.
+        """
+        # 1. Scan self.runs_dir first (for local real execution runs)
+        scanned_runs = self.scan_artifact_dir(self.runs_dir)
+        if scanned_runs:
+            return scanned_runs[:limit]
+
+        # 2. Try SQLite DB if present and non-empty
         try:
             db_runs = self.db.list_runs(limit=limit)
             if db_runs:
@@ -164,21 +190,17 @@ class RunStore:
         except Exception:
             pass
 
-        # Fallback 1: scan self.runs_dir
-        scanned = self.scan_artifact_dir(self.runs_dir)
-        if scanned:
-            return scanned[:limit]
-
-        # Fallback 2: scan demo_artifacts
-        scanned_demo = self.scan_artifact_dir(Path("demo_artifacts"))
+        # 3. Scan self.demo_dir (demo_artifacts) for reference runs
+        scanned_demo = self.scan_artifact_dir(self.demo_dir)
         return scanned_demo[:limit]
 
     def load_run(self, run_id: str) -> Optional[Dict[str, Any]]:
-        """Load full metadata and results for a run_id searching runs_dir and demo_artifacts."""
+        """Load full metadata and results for a run_id searching runs_dir and demo_dir."""
         possible_paths = [
             self.runs_dir / run_id,
-            Path("runs") / run_id,
-            Path("demo_artifacts") / run_id
+            self.demo_dir / run_id,
+            self.project_root / "runs" / run_id,
+            self.project_root / "demo_artifacts" / run_id
         ]
         run_path = None
         for p in possible_paths:

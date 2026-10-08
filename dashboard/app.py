@@ -89,19 +89,25 @@ nav_selection = st.sidebar.radio(
     ]
 )
 
-# Load Data from RunStore with automatic direct JSON artifact fallback
-runs_target_dir = Path("runs") if (Path("runs").exists() and list(Path("runs").glob("*_*"))) else Path("demo_artifacts")
+# Load Data from RunStore with automatic direct JSON artifact fallback using ROOT_DIR absolute paths
+runs_dir_abs = ROOT_DIR / "runs"
+demo_dir_abs = ROOT_DIR / "demo_artifacts"
+
+if (runs_dir_abs.exists() and list(runs_dir_abs.glob("*_*"))):
+    runs_target_dir = runs_dir_abs
+else:
+    runs_target_dir = demo_dir_abs
+
 db_target_path = runs_target_dir / "phyflow_history.db"
 
 run_store = RunStore(runs_dir=runs_target_dir, db_path=db_target_path)
 run_history = run_store.list_history(limit=100)
 
-# If runs_dir had 0 runs or couldn't load, fallback to demo_artifacts explicitly
-if not run_history and runs_target_dir != Path("demo_artifacts"):
-    run_store = RunStore(runs_dir=Path("demo_artifacts"), db_path=Path("demo_artifacts/phyflow_history.db"))
+if not run_history and runs_target_dir != demo_dir_abs:
+    run_store = RunStore(runs_dir=demo_dir_abs, db_path=demo_dir_abs / "phyflow_history.db")
     run_history = run_store.list_history(limit=100)
-    data_source_label = "Data Source: Reference Demo Artifacts"
-elif runs_target_dir == Path("demo_artifacts") or exec_mode != "Local Real EDA Mode":
+
+if runs_target_dir == demo_dir_abs or exec_mode != "Local Real EDA Mode" or not (runs_dir_abs.exists() and list(runs_dir_abs.glob("*_*"))):
     data_source_label = "Data Source: Reference Demo Artifacts"
 else:
     data_source_label = "Data Source: Local SQLite History Database"
