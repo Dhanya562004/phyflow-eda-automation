@@ -37,6 +37,7 @@ st.markdown("""
     .stMetric { background-color: #1a1f2c; border: 1px solid #2d3748; padding: 12px; border-radius: 8px; }
     .status-badge-real { background-color: #1c4532; color: #48bb78; border: 1px solid #2f855a; padding: 4px 12px; border-radius: 4px; font-weight: bold; }
     .status-badge-demo { background-color: #4a3b10; color: #ecc94b; border: 1px solid #975a16; padding: 4px 12px; border-radius: 4px; font-weight: bold; }
+    .source-badge { background-color: #1a202c; color: #a0aec0; border: 1px solid #4a5568; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; }
     .card { background-color: #171923; border: 1px solid #2d3748; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
 </style>
 """, unsafe_allow_html=True)
@@ -54,7 +55,7 @@ def get_environment_info():
 tools_status, exec_mode = get_environment_info()
 
 # Header & Mode Indicator
-col_head1, col_head2 = st.columns([3, 1])
+col_head1, col_head2 = st.columns([3, 1.2])
 with col_head1:
     st.title("⚡ PHYFlow Control Room")
     st.caption("EDA Automation & Custom-Cell Validation Framework | Physical IP Engineering")
@@ -88,11 +89,22 @@ nav_selection = st.sidebar.radio(
     ]
 )
 
-# Load Run Store Data
-artifacts_dir = Path("runs") if Path("runs").exists() and list(Path("runs").glob("*_*")) else Path("demo_artifacts")
-db_path = artifacts_dir / "phyflow_history.db"
-run_store = RunStore(runs_dir=artifacts_dir, db_path=db_path)
+# Load Data from RunStore with automatic direct JSON artifact fallback
+runs_target_dir = Path("runs") if (Path("runs").exists() and list(Path("runs").glob("*_*"))) else Path("demo_artifacts")
+db_target_path = runs_target_dir / "phyflow_history.db"
+
+run_store = RunStore(runs_dir=runs_target_dir, db_path=db_target_path)
 run_history = run_store.list_history(limit=100)
+
+# If runs_dir had 0 runs or couldn't load, fallback to demo_artifacts explicitly
+if not run_history and runs_target_dir != Path("demo_artifacts"):
+    run_store = RunStore(runs_dir=Path("demo_artifacts"), db_path=Path("demo_artifacts/phyflow_history.db"))
+    run_history = run_store.list_history(limit=100)
+    data_source_label = "Data Source: Reference Demo Artifacts"
+elif runs_target_dir == Path("demo_artifacts") or exec_mode != "Local Real EDA Mode":
+    data_source_label = "Data Source: Reference Demo Artifacts"
+else:
+    data_source_label = "Data Source: Local SQLite History Database"
 
 df_runs = pd.DataFrame(run_history) if run_history else pd.DataFrame(columns=[
     "run_id", "timestamp", "design_name", "corner", "status", "runtime_sec", "execution_mode", "wns_ns", "area_um2", "gate_count"
@@ -103,6 +115,7 @@ df_runs = pd.DataFrame(run_history) if run_history else pd.DataFrame(columns=[
 # TAB 1: DASHBOARD OVERVIEW
 # -----------------------------------------------------------------
 if nav_selection == "📊 Dashboard Overview":
+    st.markdown(f'<span class="source-badge">📌 {data_source_label}</span>', unsafe_allow_html=True)
     st.header("Executive Summary Metrics")
 
     c1, c2, c3, c4, c5 = st.columns(5)
@@ -136,9 +149,9 @@ if nav_selection == "📊 Dashboard Overview":
                 hole=0.4
             )
             fig_pie.update_layout(template="plotly_dark", height=320)
-            st.plotly_chart(fig_pie, use_container_width=True)
+            st.plotly_chart(fig_pie, width="stretch")
         else:
-            st.info("No runs found in database.")
+            st.info("No runs found in database or artifacts directory.")
 
     with col_chart2:
         st.subheader("Worst Negative Slack (WNS) Across Designs & Corners")
@@ -154,7 +167,7 @@ if nav_selection == "📊 Dashboard Overview":
                 color_discrete_map={"SS": "#e53e3e", "TT": "#3182ce", "FF": "#38a169"}
             )
             fig_bar.update_layout(template="plotly_dark", height=320)
-            st.plotly_chart(fig_bar, use_container_width=True)
+            st.plotly_chart(fig_bar, width="stretch")
 
 # -----------------------------------------------------------------
 # TAB 2: EDA TOOL ENVIRONMENT
@@ -173,7 +186,7 @@ elif nav_selection == "🛠️ EDA Tool Environment":
         })
 
     df_tools = pd.DataFrame(tool_data)
-    st.dataframe(df_tools, use_container_width=True, hide_index=True)
+    st.dataframe(df_tools, width="stretch", hide_index=True)
 
     st.markdown("### Reproducible Environment Setup")
     st.code("""
@@ -186,6 +199,7 @@ docker run --rm -it -v $(pwd):/workspace phyflow:latest phyflow check-tools
 # TAB 3: RUN EXPLORER & HISTORY
 # -----------------------------------------------------------------
 elif nav_selection == "📂 Run Explorer & History":
+    st.markdown(f'<span class="source-badge">📌 {data_source_label}</span>', unsafe_allow_html=True)
     st.header("Historical Run Explorer")
 
     if not df_runs.empty:
@@ -196,7 +210,7 @@ elif nav_selection == "📂 Run Explorer & History":
             sel_corner = st.multiselect("Filter by Corner", options=list(df_runs["corner"].unique()), default=list(df_runs["corner"].unique()))
 
         df_filtered = df_runs[(df_runs["design_name"].isin(sel_design)) & (df_runs["corner"].isin(sel_corner))]
-        st.dataframe(df_filtered, use_container_width=True)
+        st.dataframe(df_filtered, width="stretch")
 
         st.markdown("### Inspect Run Details")
         selected_run_id = st.selectbox("Select Run ID to Inspect", options=df_filtered["run_id"].tolist() if not df_filtered.empty else [])
@@ -215,6 +229,7 @@ elif nav_selection == "📂 Run Explorer & History":
 # TAB 4: REGRESSION MATRIX
 # -----------------------------------------------------------------
 elif nav_selection == "🔄 Regression Matrix":
+    st.markdown(f'<span class="source-badge">📌 {data_source_label}</span>', unsafe_allow_html=True)
     st.header("Multi-Corner Regression Suite Matrix")
 
     if not df_runs.empty:
@@ -228,7 +243,7 @@ elif nav_selection == "🔄 Regression Matrix":
                 return "background-color: #4c1d1d; color: #f56565; font-weight: bold;"
             return ""
 
-        st.dataframe(pivot_matrix.style.map(style_status), use_container_width=True)
+        st.dataframe(pivot_matrix.style.map(style_status), width="stretch")
 
         fig_matrix = px.histogram(
             df_runs,
@@ -239,12 +254,13 @@ elif nav_selection == "🔄 Regression Matrix":
             color_discrete_map={"PASSED": "#38a169", "FAILED": "#e53e3e"}
         )
         fig_matrix.update_layout(template="plotly_dark")
-        st.plotly_chart(fig_matrix, use_container_width=True)
+        st.plotly_chart(fig_matrix, width="stretch")
 
 # -----------------------------------------------------------------
 # TAB 5: STATIC TIMING ANALYSIS (STA)
 # -----------------------------------------------------------------
 elif nav_selection == "⏱️ Static Timing (STA)":
+    st.markdown(f'<span class="source-badge">📌 {data_source_label}</span>', unsafe_allow_html=True)
     st.header("Static Timing Analysis (OpenSTA)")
 
     if not df_runs.empty and "wns_ns" in df_runs.columns:
@@ -259,12 +275,13 @@ elif nav_selection == "⏱️ Static Timing (STA)":
         )
         fig_sta.add_hline(y=0.0, line_dash="dash", line_color="red", annotation_text="Zero Slack Threshold")
         fig_sta.update_layout(template="plotly_dark", height=450)
-        st.plotly_chart(fig_sta, use_container_width=True)
+        st.plotly_chart(fig_sta, width="stretch")
 
 # -----------------------------------------------------------------
 # TAB 6: PHYSICAL AREA & PLACEMENT
 # -----------------------------------------------------------------
 elif nav_selection == "📐 Physical Area & Placement":
+    st.markdown(f'<span class="source-badge">📌 {data_source_label}</span>', unsafe_allow_html=True)
     st.header("Physical Design & Layout Density")
 
     if not df_runs.empty and "area_um2" in df_runs.columns:
@@ -278,16 +295,36 @@ elif nav_selection == "📐 Physical Area & Placement":
             text_auto=True
         )
         fig_area.update_layout(template="plotly_dark", height=450)
-        st.plotly_chart(fig_area, use_container_width=True)
+        st.plotly_chart(fig_area, width="stretch")
 
 # -----------------------------------------------------------------
 # TAB 7: CUSTOM-CELL SPICE SIMULATION
 # -----------------------------------------------------------------
 elif nav_selection == "🧪 Custom-Cell SPICE Simulation":
+    st.markdown(f'<span class="source-badge">📌 {data_source_label}</span>', unsafe_allow_html=True)
     st.header("Custom-Cell Transistor SPICE Validation (ngspice)")
     st.caption("Validates inverter, NAND2, and NOR2 transient response, rise/fall delays, and logic thresholds.")
 
     sel_spice_cell = st.selectbox("Select Custom Cell", ["inverter", "nand2", "nor2"])
+
+    # Load actual parsed SPICE validation results from run_store for selected cell in TT corner
+    run_id_tt = f"{sel_spice_cell}_tt"
+    cell_run_data = run_store.load_run(run_id_tt)
+
+    trise_val = "18.5 ps"
+    tfall_val = "14.2 ps"
+    voh_val = "1.80 V"
+    vol_val = "0.00 V"
+    conv_val = "PASS"
+
+    if cell_run_data and "results" in cell_run_data:
+        sp_res = cell_run_data["results"].get("validation", {}).get("spice", {}) or {}
+        if sp_res:
+            trise_val = f"{sp_res.get('rise_delay_ps', 18.5):.1f} ps"
+            tfall_val = f"{sp_res.get('fall_delay_ps', 14.2):.1f} ps"
+            voh_val = f"{sp_res.get('voh_v', 1.8):.2f} V"
+            vol_val = f"{sp_res.get('vol_v', 0.0):.2f} V"
+            conv_val = "PASS" if sp_res.get("spice_converged", True) else "FAIL"
 
     # Generate interactive SPICE transient waveform graph
     time_ps = list(range(0, 1000, 10))
@@ -305,31 +342,39 @@ elif nav_selection == "🧪 Custom-Cell SPICE Simulation":
         template="plotly_dark",
         height=400
     )
-    st.plotly_chart(fig_wave, use_container_width=True)
+    st.plotly_chart(fig_wave, width="stretch")
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("SPICE Convergence", "PASS")
-    c2.metric("Rise Delay (50%-50%)", "18.5 ps")
-    c3.metric("Fall Delay (50%-50%)", "14.2 ps")
-    c4.metric("VOH / VOL Thresholds", "1.80 V / 0.00 V")
+    c1.metric("SPICE Convergence", conv_val)
+    c2.metric("Rise Delay (50%-50%)", trise_val)
+    c3.metric("Fall Delay (50%-50%)", tfall_val)
+    c4.metric("VOH / VOL Thresholds", f"{voh_val} / {vol_val}")
 
 # -----------------------------------------------------------------
 # TAB 8: LOG INSPECTOR
 # -----------------------------------------------------------------
 elif nav_selection == "📜 Log Inspector":
+    st.markdown(f'<span class="source-badge">📌 {data_source_label}</span>', unsafe_allow_html=True)
     st.header("EDA Execution Log Inspector")
 
     if not df_runs.empty:
         sel_run_log = st.selectbox("Select Run", df_runs["run_id"].tolist())
         sel_stage = st.selectbox("Select Stage Log", ["synthesis.log", "place_route.log", "sta.log", "ngspice.log"])
 
-        log_file_path = artifacts_dir / sel_run_log / "logs" / sel_stage
-        if log_file_path.exists():
+        target_dirs = [runs_target_dir / sel_run_log, Path("demo_artifacts") / sel_run_log, Path("runs") / sel_run_log]
+        log_file_path = None
+        for td in target_dirs:
+            candidate = td / "logs" / sel_stage
+            if candidate.exists():
+                log_file_path = candidate
+                break
+
+        if log_file_path and log_file_path.exists():
             with open(log_file_path, "r", encoding="utf-8") as f:
                 log_text = f.read()
             st.code(log_text, language="text")
         else:
-            st.warning(f"Log file not found at {log_file_path}")
+            st.warning(f"Log file '{sel_stage}' not found for run '{sel_run_log}'.")
 
 # -----------------------------------------------------------------
 # TAB 9: PARALLEL SCHEDULER & LSF
